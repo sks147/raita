@@ -1,6 +1,6 @@
 {
   "name": "raita",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "license": "MIT",
   "author": "sks147",
   "main": "dist/index.js",
@@ -43,7 +43,13 @@
     "url": "https://github.com/sks147/raita.git"
   },
   "homepage": "https://github.com/sks147/raita.git",
-  "keywords": ["utility", "utilities", "common-utils", "helper-utils", "helpers"],
+  "keywords": [
+    "utility",
+    "utilities",
+    "common-utils",
+    "helper-utils",
+    "helpers"
+  ],
   "size-limit": [
     {
       "path": "dist/raita.cjs.production.min.js",
