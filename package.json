@@ -13,12 +13,13 @@
   "scripts": {
     "analyze": "size-limit --why",
     "build": "dts build",
-    "lint": "dts lint",
+    "lint": "dts lint src test",
     "lint-fix": "dts lint src test --fix",
     "prepare": "dts build",
     "size": "size-limit",
     "start": "dts watch",
-    "test": "dts test"
+    "test": "dts test",
+	"doc": "typedoc --entryPointStrategy expand src/"
   },
   "husky": {
     "hooks": {
@@ -29,7 +30,9 @@
     "printWidth": 80,
     "semi": true,
     "singleQuote": true,
-    "trailingComma": "es5"
+    "trailingComma": "es5",
+    "useTabs": true,
+    "tabWidth": 4
   },
   "jest": {
     "testEnvironment": "node"
@@ -67,6 +70,10 @@
     "husky": "^8.0.3",
     "size-limit": "^8.2.4",
     "tslib": "^2.5.0",
+    "typedoc": "^0.23.25",
     "typescript": "^4.9.5"
+  },
+  "dependencies": {
+    "rambda": "7.2.1"
   }
 }
