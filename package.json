@@ -1,6 +1,6 @@
 {
   "name": "raita",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "MIT",
   "author": "sks147",
   "main": "dist/index.js",
@@ -19,7 +19,7 @@
     "size": "size-limit",
     "start": "dts watch",
     "test": "dts test",
-	"doc": "typedoc --entryPointStrategy expand src/"
+    "doc": "typedoc --entryPointStrategy expand src/"
   },
   "husky": {
     "hooks": {
