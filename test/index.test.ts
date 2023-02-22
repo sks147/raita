@@ -1,5 +1,6 @@
 import * as lib from '../src/index';
 import * as types from '../src/types';
+import { ObjectId, BSON } from 'mongodb';
 
 describe('isNilOrEmpty', () => {
 	it('should return true for null or undefined values', () => {
@@ -125,14 +126,25 @@ describe('fieldsListToMongoProjection', () => {
 });
 
 describe('getPagination', () => {
-	it('should return default pagination object when given invalid parameters', () => {
-		const invalidPage = 0;
-		const invalidPageSize = 0;
+	it('should return default valid pagination object when given no parameters', () => {
+		const expectedPagination: types.PaginationObject = {
+			offset: 0,
+			limit: 10,
+			isPageAndPageSize: true,
+		};
+		// @ts-ignore-next-line
+		expect(lib.getPagination()).toEqual(expectedPagination);
+	});
+
+	it('should return default invalid pagination object when given invalid parameters', () => {
+		const invalidPage = 'invalidPage';
+		const invalidPageSize = 'invalidPageSize';
 		const expectedPagination: types.PaginationObject = {
 			offset: 0,
 			limit: 10,
 			isPageAndPageSize: false,
 		};
+		// @ts-ignore-next-line
 		expect(lib.getPagination(invalidPage, invalidPageSize)).toEqual(
 			expectedPagination
 		);
@@ -147,5 +159,142 @@ describe('getPagination', () => {
 			isPageAndPageSize: true,
 		};
 		expect(lib.getPagination(page, pageSize)).toEqual(expectedPagination);
+	});
+});
+
+describe('isValidMongoObjectId', () => {
+	it('should return true for valid ObjectIds', () => {
+		expect(lib.isValidMongoObjectId(new ObjectId())).toBe(true);
+		expect(lib.isValidMongoObjectId('507f1f77bcf86cd799439011')).toBe(true);
+	});
+
+	it('should return true for valid number ', () => {
+		expect(lib.isValidMongoObjectId(123123123123)).toBe(true);
+	});
+
+	it('should return false for invalid ObjectIds', () => {
+		expect(lib.isValidMongoObjectId('invalidObjectId')).toBe(false);
+		expect(lib.isValidMongoObjectId('')).toBe(false);
+		// @ts-ignore-next-line
+		expect(lib.isValidMongoObjectId(null)).toBe(false);
+		// @ts-ignore-next-line
+		expect(lib.isValidMongoObjectId(undefined)).toBe(false);
+	});
+});
+
+describe('convertToMongoObjectId', () => {
+	it('should return an ObjectId when a valid string is provided', () => {
+		const objectId = new ObjectId();
+		const objectIdString = objectId.toHexString();
+		expect(lib.convertToMongoObjectId(objectId)).toEqual(objectId);
+		expect(lib.convertToMongoObjectId(objectIdString)).toEqual(objectId);
+	});
+
+	it('should throw a BSONError when an invalid string is provided', () => {
+		expect(() => lib.convertToMongoObjectId('invalidObjectId')).toThrow(
+			BSON.BSONError
+		);
+	});
+
+	it('should return new ObjectId when null, undefined or empty object is provided', () => {
+		expect(() =>
+			// @ts-ignore-next-line
+			lib.isValidMongoObjectId(lib.convertToMongoObjectId(null))
+		).toBeTruthy();
+		expect(() =>
+			// @ts-ignore-next-line
+			lib.isValidMongoObjectId(lib.convertToMongoObjectId(undefined))
+		).toBeTruthy();
+		expect(() =>
+			// @ts-ignore-next-line
+			lib.isValidMongoObjectId(lib.convertToMongoObjectId({}))
+		).toBeTruthy();
+	});
+});
+
+describe('numberToIndianWords', () => {
+	it('should convert a number to capitalized indian words string', () => {
+		expect(lib.numberToIndianWords(0)).toBe('Zero');
+		expect(lib.numberToIndianWords(1)).toBe('One');
+		expect(lib.numberToIndianWords(9)).toBe('Nine');
+		expect(lib.numberToIndianWords(10)).toBe('Ten');
+		expect(lib.numberToIndianWords(11)).toBe('Eleven');
+		expect(lib.numberToIndianWords(19)).toBe('Nineteen');
+		expect(lib.numberToIndianWords(20)).toBe('Twenty');
+		expect(lib.numberToIndianWords(21)).toBe('Twenty-one');
+		expect(lib.numberToIndianWords(99)).toBe('Ninety-nine');
+		expect(lib.numberToIndianWords(100)).toBe('One hundred');
+		expect(lib.numberToIndianWords(101)).toBe('One hundred and one');
+		expect(lib.numberToIndianWords(348)).toBe(
+			'Three hundred and forty-eight'
+		);
+		expect(lib.numberToIndianWords(1000)).toBe('One thousand');
+		expect(lib.numberToIndianWords(1348)).toBe(
+			'One thousand three hundred and forty-eight'
+		);
+		expect(lib.numberToIndianWords(10000)).toBe('Ten thousand');
+		expect(lib.numberToIndianWords(10348)).toBe(
+			'Ten thousand three hundred and forty-eight'
+		);
+	});
+
+	it('should convert a valid number string to capitalized indian words string', () => {
+		expect(lib.numberToIndianWords('20')).toBe('Twenty');
+		expect(lib.numberToIndianWords('21')).toBe('Twenty-one');
+		expect(lib.numberToIndianWords('1000')).toBe('One thousand');
+		expect(lib.numberToIndianWords('1348')).toBe(
+			'One thousand three hundred and forty-eight'
+		);
+		expect(lib.numberToIndianWords('10000')).toBe('Ten thousand');
+		expect(lib.numberToIndianWords('10348')).toBe(
+			'Ten thousand three hundred and forty-eight'
+		);
+	});
+
+	it('should return empty string when an invalid input is provided', () => {
+		expect(lib.numberToIndianWords('invalid')).toBe('');
+	});
+
+	it('should return empty string when null or undefined is provided', () => {
+		// @ts-ignore-next-line
+		expect(lib.numberToIndianWords(null)).toBe('');
+		// @ts-ignore-next-line
+		expect(lib.numberToIndianWords(undefined)).toBe('');
+		// @ts-ignore-next-line
+		expect(lib.numberToIndianWords({})).toBe('');
+	});
+});
+
+describe('formatIndianPhoneNumber', () => {
+	it('should format the phone number to E.164 format', () => {
+		expect(lib.formatIndianPhoneNumber('1234567890')).toBe('+911234567890');
+		expect(lib.formatIndianPhoneNumber('+911234567890')).toBe(
+			'+911234567890'
+		);
+		expect(lib.formatIndianPhoneNumber(1234567890)).toBe('+911234567890');
+		expect(lib.formatIndianPhoneNumber('91-12345-67890')).toBe(
+			'+911234567890'
+		);
+		expect(lib.formatIndianPhoneNumber('+91-12345-67890')).toBe(
+			'+911234567890'
+		);
+	});
+
+	it('should throw an error when an invalid input is provided', () => {
+		expect(() =>
+			lib.formatIndianPhoneNumber('notaphonenumber')
+		).toThrowError();
+		expect(() =>
+			// @ts-ignore-next-line
+			lib.formatIndianPhoneNumber(null)
+		).toThrowError();
+		expect(() =>
+			// @ts-ignore-next-line
+			lib.formatIndianPhoneNumber(undefined)
+		).toThrowError();
+		expect(() =>
+			// @ts-ignore-next-line
+			lib.formatIndianPhoneNumber('123456789')
+		).toThrowError();
 	});
 });
