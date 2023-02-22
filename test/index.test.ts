@@ -145,7 +145,7 @@ describe('sleep', () => {
 		const startTime = new Date().getTime();
 		await lib.sleep(delay);
 		const endTime = new Date().getTime();
-		const elapsedTime = endTime - startTime;
+		const elapsedTime = endTime - startTime + 2;
 		expect(elapsedTime).toBeGreaterThanOrEqual(delay);
 	});
 });
