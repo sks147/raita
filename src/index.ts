@@ -2,19 +2,39 @@ import * as crypto from 'crypto';
 import * as types from './types';
 import * as util from 'util';
 import { ObjectId, BSON } from 'mongodb';
-import { isNil, isEmpty } from 'rambda';
+import { isNil as _isNil, isEmpty as _isEmpty } from 'rambda';
 const phone = require('node-phonenumber');
 const writtenNumber = require('written-number');
 
 /**
- * Returns whether input is nil OR empty
+ * It returns `true` if `x` is either `null` or `undefined`.
+ */
+export const isNil = _isNil;
+
+/**
+ * It returns `true` if `x` is `empty`.
+ */
+export const isEmpty = _isEmpty;
+
+/**
+ * It returns `true` if `x` is NOT `null` or `undefined`.
+ */
+export const isNotNil = <T>(x: T): boolean => !isNil(x);
+
+/**
+ * It returns `true` if `x` is NOT `empty`.
+ */
+export const isNotEmpty = <T>(x: T): boolean => !isEmpty(x);
+
+/**
+ * It returns `true` if `x` is `null` or `undefined` or `empty`.
  */
 export const isNilOrEmpty = <T>(x: T): boolean => {
 	return isNil(x) || isEmpty(x);
 };
 
 /**
- * Returns whether input is not nil AND not empty
+ * It returns `true` if `x` is NOT `null`, `undefined` and `empty`.
  */
 export const isNotNilAndNotEmpty = <T>(x: T): boolean => {
 	return !isNil(x) && !isEmpty(x);

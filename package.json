@@ -18,7 +18,7 @@
 		"prepare": "dts build",
 		"size": "size-limit",
 		"start": "dts watch",
-		"test": "dts test",
+		"test": "dts lint src test --fix && dts test",
 		"doc": "typedoc src/index.ts src/types.ts"
 	},
 	"husky": {

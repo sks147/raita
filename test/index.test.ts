@@ -2,6 +2,70 @@ import * as lib from '../src/index';
 import * as types from '../src/types';
 import { ObjectId, BSON } from 'mongodb';
 
+describe('isNil', () => {
+	it('should return false for non-nil inputs', () => {
+		expect(lib.isNil(0)).toBe(false);
+		expect(lib.isNil('')).toBe(false);
+		expect(lib.isNil(false)).toBe(false);
+		expect(lib.isNil({})).toBe(false);
+		expect(lib.isNil([])).toBe(false);
+	});
+
+	it('should return true for nil inputs', () => {
+		expect(lib.isNil(undefined)).toBe(true);
+		expect(lib.isNil(null)).toBe(true);
+	});
+});
+
+describe('isEmpty', () => {
+	it('should return false for non-empty inputs', () => {
+		expect(lib.isEmpty(0)).toBe(false);
+		expect(lib.isEmpty('hello')).toBe(false);
+		expect(lib.isEmpty([1, 2, 3])).toBe(false);
+		expect(lib.isEmpty({ foo: 'bar' })).toBe(false);
+		expect(lib.isEmpty(undefined)).toBe(false);
+		expect(lib.isEmpty(null)).toBe(false);
+	});
+
+	it('should return true for empty inputs', () => {
+		expect(lib.isEmpty('')).toBe(true);
+		expect(lib.isEmpty([])).toBe(true);
+		expect(lib.isEmpty({})).toBe(true);
+	});
+});
+
+describe('isNotNil', () => {
+	it('should return true for non-nil inputs', () => {
+		expect(lib.isNotNil(0)).toBe(true);
+		expect(lib.isNotNil('')).toBe(true);
+		expect(lib.isNotNil(false)).toBe(true);
+		expect(lib.isNotNil({})).toBe(true);
+		expect(lib.isNotNil([])).toBe(true);
+	});
+
+	it('should return false for nil inputs', () => {
+		expect(lib.isNotNil(undefined)).toBe(false);
+		expect(lib.isNotNil(null)).toBe(false);
+	});
+});
+
+describe('isNotEmpty', () => {
+	it('should return true for non-empty inputs', () => {
+		expect(lib.isNotEmpty(0)).toBe(true);
+		expect(lib.isNotEmpty('hello')).toBe(true);
+		expect(lib.isNotEmpty([1, 2, 3])).toBe(true);
+		expect(lib.isNotEmpty({ foo: 'bar' })).toBe(true);
+		expect(lib.isNotEmpty(undefined)).toBe(true);
+		expect(lib.isNotEmpty(null)).toBe(true);
+	});
+
+	it('should return false for empty inputs', () => {
+		expect(lib.isNotEmpty('')).toBe(false);
+		expect(lib.isNotEmpty([])).toBe(false);
+		expect(lib.isNotEmpty({})).toBe(false);
+	});
+});
+
 describe('isNilOrEmpty', () => {
 	it('should return true for null or undefined values', () => {
 		expect(lib.isNilOrEmpty(null)).toBe(true);
