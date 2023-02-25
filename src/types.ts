@@ -6,3 +6,5 @@ export interface PaginationObject {
 	limit: number;
 	isPageAndPageSize: boolean;
 }
+
+export type ReturnBoolean = <T>(x: T) => boolean;

@@ -1,6 +1,6 @@
 import * as lib from '../src/index';
 import * as types from '../src/types';
-import { ObjectId, BSON } from 'mongodb';
+import { ObjectId, BSON } from 'bson';
 
 describe('isNil', () => {
 	it('should return false for non-nil inputs', () => {

@@ -1,42 +1,45 @@
 import * as crypto from 'crypto';
 import * as types from './types';
 import * as util from 'util';
-import { ObjectId, BSON } from 'mongodb';
-import { isNil as _isNil, isEmpty as _isEmpty } from 'rambda';
-const phone = require('node-phonenumber');
+import { ObjectId, BSON } from 'bson';
+
+import * as constants from './constants';
+import { phone } from 'phone';
+const _isNil = require('@ramda/isnil');
+const _isEmpty = require('@ramda/isempty');
 const writtenNumber = require('written-number');
 
 /**
  * It returns `true` if `x` is either `null` or `undefined`.
  */
-export const isNil = _isNil;
+export const isNil: types.ReturnBoolean = _isNil;
 
 /**
  * It returns `true` if `x` is `empty`.
  */
-export const isEmpty = _isEmpty;
+export const isEmpty: types.ReturnBoolean = _isEmpty;
 
 /**
  * It returns `true` if `x` is NOT `null` or `undefined`.
  */
-export const isNotNil = <T>(x: T): boolean => !isNil(x);
+export const isNotNil: types.ReturnBoolean = (x) => !isNil(x);
 
 /**
  * It returns `true` if `x` is NOT `empty`.
  */
-export const isNotEmpty = <T>(x: T): boolean => !isEmpty(x);
+export const isNotEmpty: types.ReturnBoolean = (x) => !isEmpty(x);
 
 /**
  * It returns `true` if `x` is `null` or `undefined` or `empty`.
  */
-export const isNilOrEmpty = <T>(x: T): boolean => {
+export const isNilOrEmpty: types.ReturnBoolean = (x) => {
 	return isNil(x) || isEmpty(x);
 };
 
 /**
  * It returns `true` if `x` is NOT `null`, `undefined` and `empty`.
  */
-export const isNotNilAndNotEmpty = <T>(x: T): boolean => {
+export const isNotNilAndNotEmpty: types.ReturnBoolean = (x) => {
 	return !isNil(x) && !isEmpty(x);
 };
 
@@ -185,11 +188,13 @@ export const formatIndianPhoneNumber = (
 	if (phoneNumber.toString().length < 10) {
 		throw Error('Invalid Phone Number');
 	}
-	const phoneUtil = phone.PhoneNumberUtil.getInstance();
-	const parsedPhoneNumber = phoneUtil.parse(phoneNumber.toString(), 'IN');
-	const userPhone = phoneUtil.format(
-		parsedPhoneNumber,
-		phone.PhoneNumberFormat.E164
-	);
-	return userPhone;
+	const pVal = phone(phoneNumber.toString(), {
+		country: constants.CountryCode.INDIA,
+		validateMobilePrefix: false,
+		strictDetection: false,
+	});
+	if (!pVal.isValid) {
+		throw Error('Invalid Phone Number');
+	}
+	return pVal.phoneNumber;
 };
