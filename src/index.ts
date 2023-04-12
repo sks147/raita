@@ -89,8 +89,13 @@ export const sleep = util.promisify(setTimeout);
 /**
  * Convert truthy string to boolean
  */
-export const parseBoolean = (val: string | null | undefined): boolean => {
-	if (val === null || val === undefined) {
+export const parseBoolean = (
+	val: string | null | undefined | boolean
+): boolean => {
+	if (val === true || val === false) {
+		return val;
+	}
+	if (typeof val !== 'string' || val === null || val === undefined) {
 		return false;
 	}
 	const regex = new RegExp(/^true$/);

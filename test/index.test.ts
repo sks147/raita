@@ -169,6 +169,21 @@ describe('parseBoolean', () => {
 		expect(lib.parseBoolean(null)).toBe(false);
 		expect(lib.parseBoolean(undefined)).toBe(false);
 	});
+
+	it('should return the original boolean value for boolean input', () => {
+		expect(lib.parseBoolean(true)).toBe(true);
+		expect(lib.parseBoolean(false)).toBe(false);
+	});
+
+	it('should return false for unknown input', () => {
+		expect(lib.parseBoolean('abc')).toBe(false);
+		// @ts-ignore-next-line
+		expect(lib.parseBoolean(123)).toBe(false);
+		// @ts-ignore-next-line
+		expect(lib.parseBoolean({})).toBe(false);
+		// @ts-ignore-next-line
+		expect(lib.parseBoolean([])).toBe(false);
+	});
 });
 
 describe('fieldsListToMongoProjection', () => {
